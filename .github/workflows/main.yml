@@ -1,0 +1,25 @@
+name: TK Home AI Business Engine
+on:
+  schedule:
+    - cron: '0 3 * * *' # Rozana subah 8:30 AM IST
+  workflow_dispatch: # Manual button ke liye
+
+jobs:
+  run-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install Requirements
+        run: pip install requests google-auth google-auth-oauthlib
+      - name: Run AI & Post to Google
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: python scripts/daily_engine.py
